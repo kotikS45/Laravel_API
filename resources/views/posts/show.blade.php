@@ -32,6 +32,9 @@
             <div class="card-body">
                 <p class="card-text">{{ $post->body }}</p>
             </div>
+            <div class="card-body">
+                <img class="card-text" height="100px" width="100px" src="{{ asset('storage/images/'.$post->image) }}" alt=""/>
+            </div>
             <div class="card-footer">
                 <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-primary btn-sm">Edit</a>
                 <form action="{{ route('posts.destroy', $post->id) }}" method="post">

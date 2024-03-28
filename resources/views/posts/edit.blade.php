@@ -26,7 +26,7 @@
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
             <h3>Update Post</h3>
-            <form action="{{ route('posts.update', $post->id) }}" method="post">
+            <form action="{{ route('posts.update', $post->id) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="form-group">
@@ -37,6 +37,10 @@
                 <div class="form-group">
                     <label for="body">Body</label>
                     <textarea class="form-control" id="body" name="body" rows="3" required>{{ $post->body }}</textarea>
+                </div>
+                <div class="form-group">
+                    <img class="card-text" height="100px" width="100px" src="{{ asset('storage/images/'.$post->image) }}" alt=""/>
+                    <Input type="file" class="form-control" id="image" name="image">
                 </div>
                 <button type="submit" class="btn btn-primary">Update Post</button>
             </form>

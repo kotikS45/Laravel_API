@@ -33,6 +33,9 @@
                     <div class="card-body">
                         <p class="card-text">{{ $post->body }}</p>
                     </div>
+                    <div class="card-body">
+                        <img class="card-text" height="100px" width="100px" src="{{ asset('storage/images/'.$post->image) }}" alt=""/>
+                    </div>
                     <div class="card-footer">
                         <div class="row">
                             <div class="col-sm">
