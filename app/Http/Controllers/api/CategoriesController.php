@@ -80,11 +80,20 @@ class CategoriesController extends Controller
      */
     public function store(Request $request) : JsonResponse
     {
-        $filename = 'image_'.time().'.'.'webp';
-        $manager = new ImageManager(new Driver());
-        $image = $manager->read($request->file('image'));
+        $folder = public_path("uploads");
+        if (!file_exists($folder)){
+            mkdir($folder);
+        }
 
-        $image->toWebp()->save(public_path('uploads/'.$filename));
+        $filename = uniqid().'.'.'webp';
+        $manager = new ImageManager(new Driver());
+        $sizes = [100, 300, 600, 1200];
+
+        foreach ($sizes as $size){
+            $image = $manager->read($request->file('image'));
+            $image->scale($size);
+            $image->toWebp()->save(public_path('uploads/'.$size.'_'.$filename));
+        }
 
         $category = Categories::create([
             'name' => $request->name,
@@ -128,13 +137,26 @@ class CategoriesController extends Controller
      * )
      */
     public function update($id, Request $request) : JsonResponse {
-        $filename = 'image_'.time().'.'.'webp';
-        $manager = new ImageManager(new Driver());
-        $image = $manager->read($request->file('image'));
-        $image->toWebp()->save(public_path('uploads/'.$filename));
+        $folder = public_path("uploads");
+        if (!file_exists($folder)){
+            mkdir($folder);
+        }
 
+        $filename = uniqid().'.'.'webp';
+        $manager = new ImageManager(new Driver());
+        $sizes = [100, 300, 600, 1200];
         $category = Categories::findOrFail($id);
-        File::delete(public_path('uploads/'.$category->image));
+
+        foreach ($sizes as $size){
+            if(file_exists(public_path('uploads/'.$size.'_'.$category->image))) {
+                File::delete(public_path('uploads/'.$size.'_'.$category->image));
+            }
+
+            $image = $manager->read($request->file('image'));
+            $image->scale($size);
+            $image->toWebp()->save(public_path('uploads/'.$size.'_'.$filename));
+        }
+
 
         $category->update([
             'name' => $request->name,
@@ -178,8 +200,13 @@ class CategoriesController extends Controller
         if (!$category) {
             return response()->json(["error" => "Категорії не знайдено"], 404);
         }
+        $sizes = [100, 300, 600, 1200];
 
-        File::delete(public_path('uploads/'.$category->image));
+        foreach ($sizes as $size){
+            if(file_exists(public_path('uploads/'.$size.'_'.$category->image))) {
+                File::delete(public_path('uploads/'.$size.'_'.$category->image));
+            }
+        }
         $category->delete();
 
         return response()->json("", 200, ['Charset' => 'utf-8']);
