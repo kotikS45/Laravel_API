@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CategoriesController;
+use App\Http\Controllers\api\SenderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,3 +14,5 @@ Route::get('/categories/{id}', [CategoriesController::class, 'show']);
 Route::post('/categories/store', [CategoriesController::class, 'store']);
 Route::post('/categories/update/{id}', [CategoriesController::class, 'update']);
 Route::delete('/categories/{id}', [CategoriesController::class, 'destroy']);
+
+Route::post('/send/email', [SenderController::class, 'send_email']);

@@ -175,6 +175,36 @@
                     }
                 }
             }
+        },
+        "/api/send/email": {
+            "post": {
+                "tags": [
+                    "Sender"
+                ],
+                "operationId": "b1a41ca9f7d0625f321ec72341abc07f",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Add Category."
+                    }
+                }
+            }
         }
     }
 }
