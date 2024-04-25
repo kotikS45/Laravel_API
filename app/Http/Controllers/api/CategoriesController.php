@@ -17,15 +17,56 @@ class CategoriesController extends Controller
      * @OA\Get(
      *     tags={"Category"},
      *     path="/api/categories",
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="The page number to retrieve",
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=1
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Search term to filter categories",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(response="200", description="List Categories.")
      * )
      */
-    public function index(): JsonResponse
+    public function index(Request $request) : JsonResponse
     {
-        $data = Categories::all();
+        $perPage = 4;
+        $page = $request->query('page', 1);
+        $searchTerm = $request->query('search');
+
+        $query = Categories::query();
+
+        $query->where("is_delete", false);
+        if ($searchTerm) {
+            $query->where('name', 'like', "%{$searchTerm}%");
+        }
+
+        $data = $query->paginate($perPage, ['*'], 'page', $page);
         return response()->json($data)
             ->header("Content-Type", 'application/json; charset=utf-8');
     }
+//    /**
+//     * @OA\Get(
+//     *     tags={"Category"},
+//     *     path="/api/categories",
+//     *     @OA\Response(response="200", description="List Categories.")
+//     * )
+//     */
+//    public function index(): JsonResponse
+//    {
+//        $data = Categories::all();
+//        return response()->json($data)
+//            ->header("Content-Type", 'application/json; charset=utf-8');
+//    }
     /**
      * @OA\Get(
      *     tags={"Category"},
@@ -196,18 +237,19 @@ class CategoriesController extends Controller
     public function destroy($id): JsonResponse
     {
         $category = Categories::find($id);
+        $category->update(["is_delete"=>true]);
 
-        if (!$category) {
-            return response()->json(["error" => "Категорії не знайдено"], 404);
-        }
-        $sizes = [100, 300, 600, 1200];
-
-        foreach ($sizes as $size){
-            if(file_exists(public_path('uploads/'.$size.'_'.$category->image))) {
-                File::delete(public_path('uploads/'.$size.'_'.$category->image));
-            }
-        }
-        $category->delete();
+//        if (!$category) {
+//            return response()->json(["error" => "Категорії не знайдено"], 404);
+//        }
+//        $sizes = [100, 300, 600, 1200];
+//
+//        foreach ($sizes as $size){
+//            if(file_exists(public_path('uploads/'.$size.'_'.$category->image))) {
+//                File::delete(public_path('uploads/'.$size.'_'.$category->image));
+//            }
+//        }
+//        $category->delete();
 
         return response()->json("", 200, ['Charset' => 'utf-8']);
     }
