@@ -24,3 +24,4 @@ Route::delete('/products/{id}', [CategoriesController::class, 'destroy']);
 
 Route::post('/send/email', [SenderController::class, 'send_email']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
