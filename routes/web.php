@@ -20,3 +20,7 @@ Route::get('/posts/{post}/edit', PostController::class .'@edit')->name('posts.ed
 Route::put('/posts/{post}', PostController::class .'@update')->name('posts.update');
 // deletes a post
 Route::delete('/posts/{post}', PostController::class .'@destroy')->name('posts.destroy');
+
+Route::get('/login', function () {
+    return response()->json(['error' => 'Unauthorized'], 401);
+})->name('login');
